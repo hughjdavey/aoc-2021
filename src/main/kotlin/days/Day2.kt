@@ -6,24 +6,35 @@ import days.Day2.SubmarineDirection.UP
 
 class Day2 : Day(2) {
 
+    private val submarine = Submarine(SubmarinePosition(), inputList)
+
     override fun partOne(): Any {
-        return inputList.map { SubmarineCommand(it) }.fold(SubmarinePosition()) { position, (direction, amount) ->
-            when (direction) {
-                FORWARD -> position.copy(h = position.h + amount)
-                DOWN -> position.copy(d = position.d + amount)
-                UP -> position.copy(d = position.d - amount)
-            }
-        }.getPosition()
+        return submarine.move(
+            { position, amount -> position.copy(d = position.d - amount) },
+            { position, amount -> position.copy(d = position.d + amount) },
+            { position, amount -> position.copy(h = position.h + amount) }
+        )
     }
 
     override fun partTwo(): Any {
-        return inputList.map { SubmarineCommand(it) }.fold(SubmarinePosition()) { position, (direction, amount) ->
-            when (direction) {
-                FORWARD -> position.copy(h = position.h + amount, d = position.d + (position.a * amount))
-                DOWN -> position.copy(a = position.a + amount)
-                UP -> position.copy(a = position.a - amount)
-            }
-        }.getPosition()
+        return submarine.move(
+            { position, amount -> position.copy(a = position.a - amount) },
+            { position, amount -> position.copy(a = position.a + amount) },
+            { position, amount -> position.copy(h = position.h + amount, d = position.d + (position.a * amount)) }
+        )
+    }
+
+    data class Submarine(val initialPosition: SubmarinePosition, val commands: List<String>) {
+
+        fun move(onUp: SubmarineMovement, onDown: SubmarineMovement, onForward: SubmarineMovement): Int {
+            return commands.map { SubmarineCommand(it) }.fold(initialPosition) { position, (direction, amount) ->
+                when (direction) {
+                    FORWARD -> onForward(position, amount)
+                    DOWN -> onDown(position, amount)
+                    UP -> onUp(position, amount)
+                }
+            }.getPosition()
+        }
     }
 
     data class SubmarineCommand(val direction: SubmarineDirection, val amount: Int) {
@@ -41,3 +52,5 @@ class Day2 : Day(2) {
         fun getPosition(): Int = h * d
     }
 }
+
+typealias SubmarineMovement = (p: Day2.SubmarinePosition, a: Int) -> Day2.SubmarinePosition
