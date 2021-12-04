@@ -2,24 +2,18 @@ package days
 
 class Day4 : Day(4) {
 
+    private val numbers = inputList.first().split(",").map { it.toInt() }
+
     override fun partOne(): Any {
-        val winner = winningBoardSet(true).find { it.winningNumber != null }
-        return winner?.score() ?: 0
+        return winningBoardSet(true).find { it.winningNumber != null }?.score() ?: 0
     }
 
     override fun partTwo(): Any {
-        val numbers = inputList.first().split(",").map { it.toInt() }
-        val winner = winningBoardSet(false).maxByOrNull { numbers.indexOf(it.winningNumber) }
-        return winner?.score() ?: 0
-    }
-
-    private fun parse(input: List<String>): Pair<List<Int>, List<BingoCard>> {
-        return input.first().split(",").map { it.toInt() } to
-                input.drop(2).filter { it != "" }.chunked(5).map { BingoCard(it) }
+        return winningBoardSet(false).maxByOrNull { numbers.indexOf(it.winningNumber) }?.score() ?: 0
     }
 
     private fun winningBoardSet(firstWinner: Boolean): List<BingoCard> {
-        val (numbers, boards) = parse(inputList)
+        val boards = inputList.drop(2).filter { it != "" }.chunked(5).map { BingoCard(it) }
         return numbers.asSequence()
             .map { n -> boards.map { board -> board.check(n) } }
             .takeWhile { if (firstWinner) it.all { it.winningNumber == null } else it.any { it.winningNumber == null } }
