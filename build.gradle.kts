@@ -30,3 +30,8 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+task("add-day", JavaExec::class) {
+    mainClass.set("util.AddDay")
+    classpath = sourceSets["main"].runtimeClasspath
+}
