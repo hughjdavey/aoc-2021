@@ -21,7 +21,7 @@ object AddDay {
 
         val day = File("src/main/kotlin/days/Day$dayNumber.kt")
         val input = File("src/main/resources/input_day_$dayNumber.txt")
-        val testDay = File("src/test/kotlin/days/Day$dayNumber.kt")
+        val testDay = File("src/test/kotlin/days/Day${dayNumber}Test.kt")
         val testInput = File("src/test/resources/input_day_$dayNumber.txt")
 
         input.createNewFile()
