@@ -6,27 +6,23 @@ class Day7 : Day(7) {
 
     private val crabs = inputString.split(",").map { it.replace(Regex("\\s+"), "").toInt() }
 
-    private val minPos = crabs.minOf { it }
-
-    private val maxPos = crabs.maxOf { it }
-
     override fun partOne(): Any {
-        return (minPos..maxPos).map { alignPos ->
-            crabs.fold(0) { fuel, pos -> fuel + abs(pos - alignPos) }
-        }.minOf { it }
+        // simplification of calculateMinFuel { fuel, distance -> fuel + distance }
+        return calculateMinFuel(Int::plus)
     }
 
     override fun partTwo(): Any {
-        return (minPos..maxPos).map { alignPos ->
-            crabs.fold(0) { fuel, pos ->
-                val fuelConsumed = abs(pos - alignPos)
-                var cost = 1
-                var realFuel = 0
-                (0 until fuelConsumed).forEach {
-                    realFuel += cost++
-                }
-                fuel + realFuel
-            }
+        return calculateMinFuel { fuel, distance ->
+            (0 until distance).fold(fuel to 1) { (fuelSpent, fuelCost), _ ->
+                fuelSpent + fuelCost to fuelCost + 1
+            }.first
+        }
+    }
+
+    private fun calculateMinFuel(consumptionFunction: (fuel: Int, distance: Int) -> Int): Int {
+        val (min, max) = crabs.minOf { it } to crabs.maxOf { it }
+        return (min..max).map { alignPos ->
+            crabs.fold(0) { fuel, pos -> consumptionFunction(fuel, abs(pos - alignPos)) }
         }.minOf { it }
     }
 }
