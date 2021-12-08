@@ -16,17 +16,36 @@ class Day8 : Day(8) {
 
         private val digits: MutableMap<Int, String> = (0..9).associateWith { "" }.toMutableMap()
 
-        // 1 = 2 seg
-        // 4 = 4 seg
-        // 7 = 3 seg
-        // 8 = 7 seg
-
-        // 0, 6, 9 = 6 seg
-        // 2, 3, 5 = 5 seg
-
-
         fun deduce(): Int {
-            // easy way
+            deduceEasyDigits()
+
+            // 0, 6 and 9 have 6 segments; 2, 3 and 5 have 5
+            val zeroSixNine = inputs.filter { it.length == 6 }.filterNot(digits.values::contains)
+            val twoThreeFive = inputs.filter { it.length == 5 }.filterNot(digits.values::contains)
+
+            // 9 shares all its segments with 4
+            val nine = zeroSixNine.find { d -> digits[4]!!.all { d.contains(it) } }!!
+            digits[9] = nine
+
+            // 0 has both of 1s segments whereas 6 does not
+            val zero = zeroSixNine.filterNot { it == nine }.find { d -> digits[1]!!.all { d.contains(it) } }!!
+            digits[0] = zero
+            digits[6] = zeroSixNine.first { it != zero && it != nine }
+
+            // 3 is the only one of 2, 3 and 5 that has both of 1s segments
+            val three = twoThreeFive.find { d -> digits[1]!!.all { d.contains(it) } }!!
+            digits[3] = three
+
+            // 5 has 3 of 4s segments whereas 2 only has 2
+            val five = twoThreeFive.filterNot { it == three }.first { d -> digits[4]!!.count { d.contains(it) } == 3 }
+            digits[5] = five
+            digits[2] = twoThreeFive.first { it != three && it != five }
+
+            val outs = outputs.map { o -> digits.entries.find { it.value.toCharArray().sorted() == o.toCharArray().sorted() }!!.key }
+            return outs.joinToString("").toInt()
+        }
+
+        private fun deduceEasyDigits() {
             for (input in inputs) {
                 when (input.length) {
                     2 -> { digits[1] = input }
@@ -35,28 +54,6 @@ class Day8 : Day(8) {
                     7 -> { digits[8] = input }
                 }
             }
-
-            val zeroThreeNine = inputs.filter { input -> digits[1]!!.all(input::contains) }.filterNot(digits.values::contains)
-            val zeroSixNine = inputs.filter { it.length == 6 }.filterNot(digits.values::contains)
-            val three = zeroThreeNine.filterNot(zeroSixNine::contains).first()
-            val six = zeroSixNine.filterNot(zeroThreeNine::contains).first()
-            digits[3] = three
-            digits[6] = six
-
-            val twoThreeFive = inputs.filter { it.length == 5 }.filterNot(digits.values::contains)
-            val twoFive = twoThreeFive.filterNot { it == digits[3] }
-            val five = twoFive.first { d -> digits[4]!!.count { d.contains(it) } == 3 }
-            val two = twoFive.filterNot { it == five }.first()
-            digits[2] = two
-            digits[5] = five
-
-            val nine = zeroThreeNine.find { d -> digits[4]!!.all { d.contains(it) } }!!
-            val zero = zeroThreeNine.filterNot { it == nine || it == three }.first()
-            digits[9] = nine
-            digits[0] = zero
-
-            val outs = outputs.map { o -> digits.entries.find { it.value.toCharArray().sorted() == o.toCharArray().sorted() }!!.key }
-            return outs.joinToString("").toInt()
         }
     }
 }
