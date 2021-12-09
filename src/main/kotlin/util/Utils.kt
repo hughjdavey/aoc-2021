@@ -15,5 +15,12 @@ object Utils {
         return this.first() to this.last()
     }
 
-    data class Coord(val x: Int, val y: Int)
+    data class Coord(val x: Int, val y: Int) {
+
+        fun getAdjacent(includeDiagonals: Boolean): List<Coord> {
+            return (-1..1).flatMap { dy -> (-1..1).map { dx -> copy(x = x + dx, y = y + dy) } }
+                .filterNot { it == this }
+                .filter { includeDiagonals || it.x == this.x || it.y == this.y }
+        }
+    }
 }
