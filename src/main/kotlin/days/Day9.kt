@@ -20,9 +20,6 @@ class Day9 : Day(9) {
 
     private fun findBasin(allPoints: List<Point>, point: Point, basin: Set<Point> = setOf(point)): Set<Point> {
         val adjacentAndHigher = point.getAdjacent(allPoints).filter { it.height != 9 && it.height > point.height }
-        if (adjacentAndHigher.isEmpty()) {
-            return basin
-        }
         return basin.plus(adjacentAndHigher).plus(adjacentAndHigher.flatMap { findBasin(allPoints, it) })
     }
 
