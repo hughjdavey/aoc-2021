@@ -4,17 +4,17 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.jupiter.api.Test
 
-class Day9Test {
+class Day10Test {
 
-    private val dayNine = Day9()
+    private val dayTen = Day10()
 
     @Test
     fun testPartOne() {
-        assertThat(dayNine.partOne(), `is`(15))
+        assertThat(dayTen.partOne(), `is`(26397))
     }
 
     @Test
     fun testPartTwo() {
-        assertThat(dayNine.partTwo(), `is`(1134))
+        assertThat(dayTen.partTwo(), `is`(288957L))
     }
 }
