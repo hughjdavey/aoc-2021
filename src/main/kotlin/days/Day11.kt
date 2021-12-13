@@ -20,6 +20,7 @@ class Day11 : Day(11) {
 
     companion object {
 
+        // todo make this functional/immutable
         fun step(octos: List<Octopus>): Int {
             var flashes = 0
             octos.forEach { it.energy++ }

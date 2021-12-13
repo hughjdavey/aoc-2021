@@ -11,6 +11,7 @@ class Day7 : Day(7) {
         return calculateMinFuel(Int::plus)
     }
 
+    // todo improve performance as this takes over 10s on my real input
     override fun partTwo(): Any {
         return calculateMinFuel { fuel, distance ->
             (0 until distance).fold(fuel to 1) { (fuelSpent, fuelCost), _ ->
