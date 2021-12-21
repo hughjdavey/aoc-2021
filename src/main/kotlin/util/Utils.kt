@@ -23,4 +23,14 @@ object Utils {
                 .filter { includeDiagonals || it.x == this.x || it.y == this.y }
         }
     }
+
+    // credit: https://jivimberg.io/blog/2018/06/02/implementing-takewhileinclusive-in-kotlin/
+    inline fun <T> Iterable<T>.takeWhileInclusive(predicate: (T) -> Boolean): List<T> {
+        var shouldContinue = true
+        return takeWhile {
+            val result = shouldContinue
+            shouldContinue = predicate(it)
+            result
+        }
+    }
 }
